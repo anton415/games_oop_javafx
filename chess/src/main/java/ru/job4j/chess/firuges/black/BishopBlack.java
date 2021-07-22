@@ -18,13 +18,25 @@ public class BishopBlack implements Figure {
 
     @Override
     public Cell[] way(Cell dest) {
-        throw new ImpossibleMoveException(
-                String.format("Could not way by diagonal from %s to %s", position, dest)
-        );
+        if (!isDiagonal(position, dest)) {
+            throw new ImpossibleMoveException(
+                    String.format("Could not move by diagonal from %s to %s", position, dest)
+            );
+        }
+        int size = Math.abs(dest.getX() - position.getX());
+        Cell[] steps = new Cell[size];
+        int deltaX = dest.getX() - position.getX() > 0 ? 1 : -1;
+        int deltaY = dest.getY() - position.getY() > 0 ? 1 : -1;
+        for (int index = 0; index < size; index++) {
+            steps[index] = Cell.findBy(position.getX() + deltaX, position.getY() + deltaY);
+            deltaX = deltaX > 0 ? deltaX + 1 : deltaX - 1;
+            deltaY = deltaY > 0 ? deltaY + 1 : deltaY - 1;
+        }
+        return steps;
     }
 
     public boolean isDiagonal(Cell source, Cell dest) {
-        return false;
+        return Math.abs(dest.getX() - source.getX()) == Math.abs(dest.getY() - source.getY());
     }
 
     @Override
